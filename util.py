@@ -36,6 +36,21 @@ def randomPageGenerator():
 
     return ret
     
+def getCenterPoints(root, window_dim):
+    """:
+    This function returns the center points of the window
+    @param: root, (window.len, window.width)
+    @return: center_x, center_y
+    """
+    x_center = int(root.winfo_screenwidth()/2 - window_dim[0]/2)
+    y_center = int(root.winfo_screenheight()/2 - window_dim[1]/2)
+
+    return (x_center, y_center)
+
+
+def displayPage(root, page_obj):
+    pass
+
 
 def gui(page_obj):
     root = tk.Tk()
@@ -44,9 +59,26 @@ def gui(page_obj):
     # Display the page title
     title_label = tk.Label(root, text=page_obj['meta']['title'])
     title_label.pack()
-    
 
-    root.geometry("400x400")
+    # Determine window placement (center)
+    centr = getCenterPoints(root, (800, 800))
+
+    # Create Read More button
+    read_more_btn = tk.Button(
+                        root, 
+                        text="Show this article",
+                        command = displayPage(root, page_obj)
+                    )
+
+    # Display Read More button
+    read_more_btn.pack(
+                    side=tk.BOTTOM,
+                    fill=tk.X,
+                    expand=True
+                )
+
+    root.geometry(f"800x800+{centr[0]}+{centr[1]}")
     root.mainloop()
+
 
     
