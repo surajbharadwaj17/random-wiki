@@ -6,6 +6,7 @@
 import wikipedia as wk
 import json
 import tkinter as tk
+from tkhtmlview import HTMLLabel
 
 def randomPageGenerator():
 
@@ -20,13 +21,16 @@ def randomPageGenerator():
 
     # search for the page
     page = wk.page(title)
-
+    print(f"categories: {page.categories}")
 
     # Get meta info about the page
-    page_meta = {
-        'title' : title,
-        'categories' : page.categories
-    }
+    try:
+        page_meta = {
+            'title' : title,
+            'categories' : page.categories
+        }
+    except:
+        raise ValueError("[ERROR] FAILURE IN RETRIEVING PAGE META INFO FROM WIKI..More exception handling to be developed")
 
     # Prepare return object
     ret = {
@@ -49,12 +53,22 @@ def getCenterPoints(root, window_dim):
 
 
 def displayPage(root, page_obj):
-    pass
+    """
+        Display the rendered HTML page
+    """
+
+
+    html_label = HTMLLabel(root, html=page_obj['page'].html())
+    html_label.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+
+    # Above method works, but html is page is not rendered.
+    # Try PyQT
 
 
 def gui(page_obj):
     root = tk.Tk()
     root.title("Random Wikipedia Page")
+    root.resizable(True, True)
 
     # Display the page title
     title_label = tk.Label(root, text=page_obj['meta']['title'])
@@ -63,19 +77,26 @@ def gui(page_obj):
     # Determine window placement (center)
     centr = getCenterPoints(root, (800, 800))
 
-    # Create Read More button
-    read_more_btn = tk.Button(
-                        root, 
-                        text="Show this article",
-                        command = displayPage(root, page_obj)
-                    )
+    # Display the page
+    #root.geometry(f"{centr[0]}x{centr[1]}+{centr[0]}+{centr[1]}")
 
-    # Display Read More button
-    read_more_btn.pack(
-                    side=tk.BOTTOM,
-                    fill=tk.X,
-                    expand=True
-                )
+    print(page_obj['page'].html())
+    displayPage(root, page_obj)
+
+    # # Create Read More button
+    # read_more_btn = tk.Button(
+    #                     root, 
+    #                     text="Show this article",
+    #                     command = displayPage(root, page_obj)
+    #                 )
+
+    # # Display Read More button
+    # read_more_btn.pack(
+    #                 side=tk.BOTTOM,
+    #                 fill=tk.X,
+    #                 expand=True
+    #             )
+
 
     root.geometry(f"800x800+{centr[0]}+{centr[1]}")
     root.mainloop()

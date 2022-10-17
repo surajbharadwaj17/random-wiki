@@ -5,6 +5,6 @@ Simple application to fetch random wikipedia article. User can choose to read th
 
 ## Usage ##
 
-python radomwiki.py
+python randomwiki.py
 
 
